@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="CyberVault: Easy, private, and secure client-side file and note encryption. Zero servers, zero tracking, bank-grade AES-256 protection.">
+  <meta name="keywords"
+    content="file encryption, privacy, password protection, secure files, client-side encryption, safe vault">
+  <meta name="author" content="CyberVault">
+  <title>CyberVault // Private & Secure File Locker</title>
+
+  <!-- Modern Typography: JetBrains Mono & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <!-- Ambient Cyber Background -->
+  <div class="cyber-background" aria-hidden="true">
+    <div class="grid-overlay"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+    <div class="scanline"></div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-wrapper">
+    <!-- Main Top Navigation -->
+    <header class="app-header">
+      <div class="brand-container">
+        <div class="brand-shield" id="brand-logo">
+          <svg class="shield-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+          <div class="shield-pulse"></div>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">CYBER<span class="neon-text">VAULT</span></h1>
+          <span class="brand-badge">PRIVATE & SECURE FILE LOCKER</span>
+        </div>
+      </div>
+
+      <!-- User-Friendly Privacy & Security Badges -->
+      <div class="protocol-badges-header">
+        <span class="cyber-chip" title="Industry standard AES-256 military & banking encryption">
+          <span class="chip-dot chip-green"></span> Bank-Grade Security
+        </span>
+        <span class="cyber-chip" title="Everything runs directly in your browser. No files are ever uploaded anywhere.">
+          <span class="chip-dot chip-blue"></span> 100% On-Device
+        </span>
+        <span class="cyber-chip chip-glow" title="No tracking, no cookies, no accounts stored on external servers.">
+          <span class="chip-dot chip-cyan"></span> Zero Cloud Tracking
+        </span>
+      </div>
+
+      <!-- Session State & User Actions -->
+      <div class="header-actions">
+        <div id="header-user-status" class="user-status-card hidden">
+          <div class="agent-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <div class="agent-details">
+            <span class="agent-label">SIGNED IN AS</span>
+            <span id="header-username" class="agent-name">User</span>
+          </div>
+          <button id="btn-logout" class="btn-icon-logout" title="Sign Out & Lock Vault">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWPORT -->
+    <main class="main-viewport">
+
+      <!-- ============================================== -->
+      <!-- SECTION 1: AUTHENTICATION (LOGIN / REGISTER)  -->
+      <!-- ============================================== -->
+      <section id="auth-section" class="cyber-section auth-section">
+        <div class="auth-card-wrapper">
+          <div class="cyber-card auth-card">
+            <div class="auth-header">
+              <div class="auth-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <h2 class="auth-title">WELCOME TO CYBERVAULT</h2>
+              <p class="auth-subtitle">Your private file safe. Files and passwords stay strictly on your device.</p>
+            </div>
+
+            <!-- Tab Switcher (Login / Register) -->
+            <div class="auth-tab-bar">
+              <button id="tab-btn-login" class="auth-tab active" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                  <polyline points="10 17 15 12 10 7" />
+                  <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                Sign In
+              </button>
+              <button id="tab-btn-register" class="auth-tab" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="8.5" cy="7" r="4" />
+                  <line x1="20" y1="8" x2="20" y2="14" />
+                  <line x1="23" y1="11" x2="17" y2="11" />
+                </svg>
+                Create Free Account
+              </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="form-login" class="auth-form" autocomplete="off">
+              <div class="input-group">
+                <label for="login-username">USERNAME / ACCOUNT NAME</label>
+                <div class="input-control">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </span>
+                  <input type="text" id="login-username" placeholder="Enter your username" required autofocus>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="login-password">MASTER PASSWORD</label>
+                <div class="input-control">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </span>
+                  <input type="password" id="login-password" placeholder="Enter your master password" required>
+                  <button type="button" class="btn-toggle-pwd" data-target="login-password"
+                    title="Toggle password visibility">
+                    <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" id="btn-submit-login" class="cyber-btn btn-primary btn-block">
+                <span>UNLOCK MY VAULT</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+
+              <div class="auth-tip-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span>First time here? Click <strong>"Create Free Account"</strong> above. Your login is protected with
+                  100,000-round PBKDF2 encryption stored only in this browser.</span>
+              </div>
+            </form>
+
+            <!-- REGISTRATION FORM -->
+            <form id="form-register" class="auth-form hidden" autocomplete="off">
+              <div class="input-group">
+                <label for="reg-username">CHOOSE A USERNAME</label>
+                <div class="input-control">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </span>
+                  <input type="text" id="reg-username" placeholder="e.g. sarah, alex_secure" required>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="reg-password">CREATE A MASTER PASSWORD</label>
+                <div class="input-control">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </span>
+                  <input type="password" id="reg-password" placeholder="Minimum 6 characters" required>
+                  <button type="button" class="btn-toggle-pwd" data-target="reg-password"
+                    title="Toggle password visibility">
+                    <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="reg-confirm">CONFIRM MASTER PASSWORD</label>
+                <div class="input-control">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                  </span>
+                  <input type="password" id="reg-confirm" placeholder="Type password again to confirm" required>
+                </div>
+              </div>
+
+              <button type="submit" id="btn-submit-register" class="cyber-btn btn-secondary btn-block">
+                <span>CREATE MY SECURE ACCOUNT</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="8.5" cy="7" r="4" />
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <!-- Welcoming Feature Grid -->
+          <div class="auth-features-grid">
+            <div class="feature-item">
+              <div class="feature-icon">🛡️</div>
+              <div class="feature-body">
+                <h4>100% Private & Safe</h4>
+                <p>Files never leave your computer. Everything happens inside your browser.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🔒</div>
+              <div class="feature-body">
+                <h4>Bank-Grade Security</h4>
+                <p>Protected by AES-256 and 100,000-round PBKDF2 password derivation.</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📁</div>
+              <div class="feature-body">
+                <h4>Works With Any File</h4>
+                <p>Lock PDFs, photos, videos, confidential documents, or secret notes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SECTION 2: WORKSPACE (ENCRYPT / DECRYPT TABS)  -->
+      <!-- ============================================== -->
+      <section id="workspace-section" class="cyber-section workspace-section hidden">
+
+        <!-- Friendly Status Ticker Bar -->
+        <div class="ticker-bar">
+          <div class="ticker-item">
+            <span class="ticker-label">STATUS:</span>
+            <span class="ticker-val neon-green">PROTECTED & READY</span>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-label">ENCRYPTION:</span>
+            <span class="ticker-val">AES-256 (BANK GRADE)</span>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-label">PROTECTION:</span>
+            <span class="ticker-val">100,000 PBKDF2 ROUNDS</span>
+          </div>
+          <div class="ticker-item">
+            <span class="ticker-label">PRIVACY:</span>
+            <span class="ticker-val neon-cyan">DEVICE MEMORY ONLY</span>
+          </div>
+        </div>
+
+        <!-- Primary Navigation Tabs -->
+        <nav class="nav-workspace-tabs" role="tablist">
+          <button id="nav-tab-encrypt" class="workspace-tab active" role="tab" aria-selected="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span>LOCK FILES & NOTES</span>
+            <span class="badge-dot"></span>
+          </button>
+
+          <button id="nav-tab-decrypt" class="workspace-tab" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+            </svg>
+            <span>UNLOCK & RESTORE FILE</span>
+            <span class="badge-dot"></span>
+          </button>
+
+          <button id="nav-tab-audit" class="workspace-tab" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            <span>HOW IT WORKS & PRIVACY</span>
+          </button>
+        </nav>
+
+        <!-- ============================================== -->
+        <!-- TAB 1: ENCRYPTION PANEL                        -->
+        <!-- ============================================== -->
+        <div id="panel-encrypt" class="tab-panel active">
+
+          <!-- Friendly 3-Step Guide Banner -->
+          <div class="steps-guide-banner">
+            <div class="step-chip active">
+              <span class="step-num">1</span>
+              <span class="step-title">Select File or Note</span>
+            </div>
+            <span class="step-arrow">➔</span>
+            <div class="step-chip">
+              <span class="step-num">2</span>
+              <span class="step-title">Set Secret Password</span>
+            </div>
+            <span class="step-arrow">➔</span>
+            <div class="step-chip">
+              <span class="step-num">3</span>
+              <span class="step-title">Download Locked (.locked) File</span>
+            </div>
+          </div>
+
+          <div class="panel-layout">
+
+            <!-- Left Config / Input Card -->
+            <div class="cyber-card form-card">
+              <div class="card-header">
+                <div class="header-title-wrap">
+                  <h3 class="card-title">LOCK YOUR FILES SECURELY</h3>
+                  <p class="card-desc">Choose a file or write a note, choose a secret password, and create your locked
+                    file.</p>
+                </div>
+                <!-- Submode Switcher: File vs Text -->
+                <div class="submode-pill-selector">
+                  <button type="button" id="submode-file" class="submode-btn active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Lock a File
+                  </button>
+                  <button type="button" id="submode-text" class="submode-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Secret Note
+                  </button>
+                </div>
+              </div>
+
+              <!-- FILE ENCRYPTION INPUT -->
+              <div id="encrypt-file-container" class="input-mode-container">
+                <div class="dropzone" id="encrypt-dropzone" tabindex="0" role="button"
+                  aria-label="Drop file or click to select">
+                  <input type="file" id="encrypt-file-input" class="hidden-file-input">
+                  <div class="dropzone-content">
+                    <div class="dropzone-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                      </svg>
+                    </div>
+                    <div class="dropzone-text">
+                      <p class="primary-prompt">Drag & Drop any file here, or <span class="highlight-link">Browse
+                          Computer</span></p>
+                      <p class="secondary-prompt">Supports PDFs, Photos, Videos, Documents, Audio, Spreadsheets, and
+                        ZIPs (any file type)</p>
+                    </div>
+                  </div>
+                  <!-- Selected File Display Card -->
+                  <div id="encrypt-selected-file" class="selected-file-display hidden">
+                    <div class="file-icon-badge" id="encrypt-file-badge">FILE</div>
+                    <div class="file-info-meta">
+                      <span id="encrypt-file-name" class="file-name-text">sample_document.pdf</span>
+                      <span id="encrypt-file-size" class="file-size-text">0.00 KB</span>
+                    </div>
+                    <button type="button" id="btn-remove-encrypt-file" class="btn-remove-file"
+                      title="Choose another file">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TEXT ENCRYPTION INPUT -->
+              <div id="encrypt-text-container" class="input-mode-container hidden">
+                <div class="input-group">
+                  <div class="label-row">
+                    <label for="encrypt-plaintext">YOUR CONFIDENTIAL NOTE OR MESSAGE</label>
+                    <span id="text-counter" class="sub-counter">0 chars / 0 words</span>
+                  </div>
+                  <textarea id="encrypt-plaintext" rows="6"
+                    placeholder="Type your private notes, passwords, sensitive memos, recovery phrases, or private reminders here..."></textarea>
+                </div>
+                <div class="input-group">
+                  <label for="encrypt-text-filename">SAVED FILE NAME (OPTIONAL)</label>
+                  <input type="text" id="encrypt-text-filename" placeholder="my_secret_note.txt (Default)">
+                </div>
+              </div>
+
+              <!-- ENCRYPTION PASSWORD SETTINGS -->
+              <div class="crypto-key-section">
+                <div class="input-group">
+                  <div class="label-row">
+                    <label for="encrypt-password">SET A SECRET PASSWORD FOR THIS FILE</label>
+                    <button type="button" id="btn-gen-pass" class="btn-text-action"
+                      title="Create a secure random password automatically">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                      </svg>
+                      Suggest Strong Password
+                    </button>
+                  </div>
+                  <div class="input-control">
+                    <span class="input-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                    </span>
+                    <input type="password" id="encrypt-password"
+                      placeholder="Enter a secret password only you will know" required>
+                    <button type="button" class="btn-toggle-pwd" data-target="encrypt-password"
+                      title="Show or hide password">
+                      <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    </button>
+                  </div>
+                  <p class="field-hint">💡 <strong>Important Note:</strong> Because this app does not store your
+                    passwords, nobody can restore your file if you forget this password. Keep it safe!</p>
+                </div>
+
+                <!-- Live Password Strength Meter -->
+                <div class="strength-meter-wrap">
+                  <div class="strength-meta">
+                    <span class="meter-label">PASSWORD STRENGTH:</span>
+                    <span id="strength-verdict" class="meter-verdict verdict-none">AWAITING INPUT</span>
+                  </div>
+                  <div class="strength-track">
+                    <div id="strength-bar" class="strength-fill strength-0"></div>
+                  </div>
+                  <!-- Checklist pills -->
+                  <div class="pwd-criteria-grid">
+                    <span id="crit-len" class="crit-pill">8+ Characters</span>
+                    <span id="crit-upper" class="crit-pill">Uppercase (A-Z)</span>
+                    <span id="crit-lower" class="crit-pill">Lowercase (a-z)</span>
+                    <span id="crit-num" class="crit-pill">Numbers (0-9)</span>
+                    <span id="crit-sym" class="crit-pill">Symbols (!@#)</span>
+                  </div>
+                </div>
+
+                <!-- Submit Encryption Button -->
+                <button type="button" id="btn-run-encrypt" class="cyber-btn btn-primary btn-block btn-xl">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <span>LOCK MY FILE NOW (.locked)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Results & Status Monitor -->
+            <div class="cyber-card result-card">
+              <div class="card-header">
+                <h3 class="card-title">VAULT STATUS</h3>
+                <span class="engine-badge ready" id="encrypt-engine-status">READY</span>
+              </div>
+
+              <!-- Processing Indicator -->
+              <div id="encrypt-progress-container" class="process-indicator hidden">
+                <div class="spinner-cyber"></div>
+                <h4 id="encrypt-progress-title">LOCKING YOUR FILE SECURELY...</h4>
+                <p id="encrypt-progress-desc">Applying bank-grade AES-256 encryption inside your browser memory...</p>
+                <div class="progress-bar-track">
+                  <div id="encrypt-progress-bar" class="progress-bar-fill"></div>
+                </div>
+              </div>
+
+              <!-- Awaiting Action Empty State -->
+              <div id="encrypt-empty-state" class="empty-state-view">
+                <div class="empty-icon-shield">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="M8 11h8M8 15h5" />
+                  </svg>
+                </div>
+                <h4>Your Safe is Ready</h4>
+                <p>Pick a file or write a note on the left, type a secret password, and click <strong>"Lock My File
+                    Now"</strong>.</p>
+                <div class="security-guarantee-box">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                  <span><strong>Zero-Knowledge Guarantee:</strong> Your files never touch any external server or
+                    network.</span>
+                </div>
+              </div>
+
+              <!-- Encryption Success Artifact Card -->
+              <div id="encrypt-success-card" class="success-vault-card hidden">
+                <div class="success-banner">
+                  <div class="success-icon-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4>FILE LOCKED SUCCESSFULLY!</h4>
+                    <p>Your protected .locked file is ready to download.</p>
+                  </div>
+                </div>
+
+                <div class="artifact-meta-table">
+                  <div class="meta-row">
+                    <span class="m-key">ORIGINAL FILE:</span>
+                    <span id="enc-res-original-name" class="m-val text-truncate">document.pdf</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="m-key">FILE TYPE:</span>
+                    <span id="enc-res-mime" class="m-val">PDF Document</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="m-key">PROTECTED FORMAT:</span>
+                    <span class="m-val neon-green">Locked File (.locked)</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="m-key">LOCKED FILE SIZE:</span>
+                    <span id="enc-res-size" class="m-val">124.5 KB</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="m-key">DIGITAL FINGERPRINT:</span>
+                    <span id="enc-res-hash" class="m-val code-font text-truncate">e3b0c442...</span>
+                  </div>
+                </div>
+
+                <div class="security-cleared-notice">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                  <span>Password automatically erased from memory for your security.</span>
+                </div>
+
+                <!-- Download Button -->
+                <a id="btn-download-locked" class="cyber-btn btn-primary btn-block btn-lg" download="encrypted.locked">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <span>DOWNLOAD LOCKED FILE (.locked)</span>
+                </a>
+
+                <!-- Alternative Base64 Copier (Great for text/emails) -->
+                <button type="button" id="btn-copy-enc-base64" class="cyber-btn btn-secondary btn-block">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  <span>COPY AS SHAREABLE TEXT (BASE64)</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 2: DECRYPTION & RESTORATION PANEL          -->
+        <!-- ============================================== -->
+        <div id="panel-decrypt" class="tab-panel">
+
+          <!-- Friendly 3-Step Guide Banner -->
+          <div class="steps-guide-banner">
+            <div class="step-chip active">
+              <span class="step-num">1</span>
+              <span class="step-title">Upload .locked File</span>
+            </div>
+            <span class="step-arrow">➔</span>
+            <div class="step-chip">
+              <span class="step-num">2</span>
+              <span class="step-title">Enter Secret Password</span>
+            </div>
+            <span class="step-arrow">➔</span>
+            <div class="step-chip">
+              <span class="step-num">3</span>
+              <span class="step-title">Preview & Download Original</span>
+            </div>
+          </div>
+
+          <div class="panel-layout">
+
+            <!-- Left: Decryption Input & Key Form -->
+            <div class="cyber-card form-card">
+              <div class="card-header">
+                <div class="header-title-wrap">
+                  <h3 class="card-title">UNLOCK & RESTORE YOUR FILE</h3>
+                  <p class="card-desc">Upload your `.locked` file, enter the secret password, and get your original file
+                    back.</p>
+                </div>
+              </div>
+
+              <!-- Upload Locked File Dropzone -->
+              <div class="input-mode-container">
+                <div class="dropzone" id="decrypt-dropzone" tabindex="0" role="button"
+                  aria-label="Drop locked file or click to select">
+                  <input type="file" id="decrypt-file-input" class="hidden-file-input"
+                    accept=".locked,.enc,application/octet-stream,*">
+                  <div class="dropzone-content">
+                    <div class="dropzone-icon neon-amber-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                      </svg>
+                    </div>
+                    <div class="dropzone-text">
+                      <p class="primary-prompt">Drag & Drop your <span class="neon-text">.locked</span> file here, or
+                        <span class="highlight-link">Browse Computer</span>
+                      </p>
+                      <p class="secondary-prompt">You can also paste shareable text (Base64) using the option below</p>
+                    </div>
+                  </div>
+                  <!-- Selected Locked File Display Card -->
+                  <div id="decrypt-selected-file" class="selected-file-display hidden">
+                    <div class="file-icon-badge badge-locked" id="decrypt-file-badge">LOCKED</div>
+                    <div class="file-info-meta">
+                      <span id="decrypt-file-name" class="file-name-text">secure_payload.locked</span>
+                      <span id="decrypt-file-size" class="file-size-text">0.00 KB</span>
+                    </div>
+                    <button type="button" id="btn-remove-decrypt-file" class="btn-remove-file"
+                      title="Choose another file">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Alternatively paste Base64 Armor -->
+              <div class="base64-collapsible">
+                <button type="button" id="btn-toggle-base64-input" class="btn-text-action">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                  <span>Or paste shareable text instead</span>
+                </button>
+                <div id="decrypt-base64-container" class="base64-box hidden">
+                  <textarea id="decrypt-base64-text" rows="3"
+                    placeholder="Paste your shareable encrypted text here..."></textarea>
+                </div>
+              </div>
+
+              <!-- Decryption Key Input -->
+              <div class="crypto-key-section">
+                <div class="input-group">
+                  <label for="decrypt-password">SECRET PASSWORD FOR THIS FILE</label>
+                  <div class="input-control">
+                    <span class="input-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                          d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+                      </svg>
+                    </span>
+                    <input type="password" id="decrypt-password"
+                      placeholder="Enter the password you used when locking this file" required>
+                    <button type="button" class="btn-toggle-pwd" data-target="decrypt-password"
+                      title="Show or hide password">
+                      <svg class="eye-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Execute Decrypt Button -->
+                <button type="button" id="btn-run-decrypt" class="cyber-btn btn-secondary btn-block btn-xl">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                  </svg>
+                  <span>UNLOCK & RESTORE MY FILE</span>
+                </button>
+              </div>
+
+              <!-- Polite Error Alert Banner -->
+              <div id="decrypt-error-banner" class="alert-cyber alert-danger hidden" role="alert">
+                <div class="alert-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                </div>
+                <div class="alert-content">
+                  <h4>Oops! Could Not Unlock File</h4>
+                  <p id="decrypt-error-text">Incorrect password or the file is corrupted. Please double-check your
+                    password and try again.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right: Decryption Preview & Restoration Card -->
+            <div class="cyber-card result-card">
+              <div class="card-header">
+                <h3 class="card-title">RESTORED FILE PREVIEW</h3>
+                <span class="engine-badge ready" id="decrypt-engine-status">STANDBY</span>
+              </div>
+
+              <!-- Decrypting Spinner -->
+              <div id="decrypt-progress-container" class="process-indicator hidden">
+                <div class="spinner-cyber spinner-amber"></div>
+                <h4>VERIFYING PASSWORD & RESTORING...</h4>
+                <p>Unlocking your data right inside your browser memory...</p>
+                <div class="progress-bar-track">
+                  <div id="decrypt-progress-bar" class="progress-bar-fill progress-amber"></div>
+                </div>
+              </div>
+
+              <!-- Empty State -->
+              <div id="decrypt-empty-state" class="empty-state-view">
+                <div class="empty-icon-shield">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                  </svg>
+                </div>
+                <h4>Waiting for Locked File</h4>
+                <p>Upload your `.locked` file and enter your password. Your restored file will appear here for instant
+                  preview and download.</p>
+              </div>
+
+              <!-- Success Card with in-browser preview -->
+              <div id="decrypt-success-card" class="success-vault-card hidden">
+                <div class="success-banner banner-green">
+                  <div class="success-icon-wrap icon-green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4>FILE UNLOCKED SUCCESSFULLY!</h4>
+                    <p>Your original file has been restored with 100% precision.</p>
+                  </div>
+                </div>
+
+                <!-- Restored Metadata Table -->
+                <div class="artifact-meta-table">
+                  <div class="meta-row">
+                    <span class="m-key">RESTORED FILE:</span>
+                    <span id="dec-res-name" class="m-val text-truncate neon-cyan">confidential_memo.pdf</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="m-key">FILE TYPE:</span>
+                    <span id="dec-res-type" class="m-val">PDF Document</span>
+                  </div>
+                  <div class="meta-row">
+                    <span class="m-key">RESTORED SIZE:</span>
+                    <span id="dec-res-size" class="m-val">120.4 KB</span>
+                  </div>
+                </div>
+
+                <div class="security-cleared-notice">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                  <span>Password cleared from memory. Your restored file is safe.</span>
+                </div>
+
+                <!-- In-Browser Interactive Preview Enclave -->
+                <div class="preview-viewport-enclave">
+                  <div class="preview-header">
+                    <span>IN-BROWSER PREVIEW</span>
+                    <span id="preview-type-tag" class="preview-tag">TEXT</span>
+                  </div>
+                  <div id="preview-body" class="preview-body">
+                    <!-- Dynamic Preview Content populated by script.js -->
+                  </div>
+                </div>
+
+                <!-- Actions: Download Restored File -->
+                <div class="restore-action-buttons">
+                  <a id="btn-download-restored" class="cyber-btn btn-primary btn-block btn-lg" download="">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    <span>DOWNLOAD RESTORED ORIGINAL FILE</span>
+                  </a>
+                  <button type="button" id="btn-copy-restored-text" class="cyber-btn btn-secondary btn-block hidden">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    <span>COPY RESTORED NOTE TO CLIPBOARD</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- TAB 3: HOW IT WORKS & PRIVACY EXPLAINED        -->
+        <!-- ============================================== -->
+        <div id="panel-audit" class="tab-panel">
+          <div class="audit-grid">
+
+            <div class="cyber-card">
+              <div class="card-header">
+                <h3 class="card-title">HOW CYBERVAULT PROTECTS YOU</h3>
+                <span class="cyber-chip chip-glow"><span class="chip-dot chip-cyan"></span> 100% PRIVATE</span>
+              </div>
+              <div class="audit-body">
+                <p>CyberVault runs entirely on your device using your browser's built-in
+                  <code>window.crypto.subtle</code> engine. Your files, notes, and passwords are never sent across the
+                  internet:
+                </p>
+                <div class="spec-list">
+                  <div class="spec-card">
+                    <div class="spec-badge">CIPHER</div>
+                    <div>
+                      <strong>Bank-Grade AES-256 Protection</strong>
+                      <p>Every file is scrambled with 256-bit AES-GCM encryption. Even supercomputers cannot open your
+                        file without your exact password.</p>
+                    </div>
+                  </div>
+                  <div class="spec-card">
+                    <div class="spec-badge">SAFETY</div>
+                    <div>
+                      <strong>100,000 Rounds of Password Strengthening</strong>
+                      <p>We use PBKDF2 with 100,000 computation rounds. This makes automated password guessing
+                        (brute-force attacks) computationally unfeasible.</p>
+                    </div>
+                  </div>
+                  <div class="spec-card">
+                    <div class="spec-badge">TAMPER PROOF</div>
+                    <div>
+                      <strong>Built-in Tamper Detection</strong>
+                      <p>Each locked file includes an authentication tag. If anyone alters even a single character in
+                        your file, CyberVault immediately refuses to open it.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cyber-card">
+              <div class="card-header">
+                <h3 class="card-title">YOUR FILE LOCKER SPECIFICATIONS</h3>
+                <span class="cyber-chip"><span class="chip-dot chip-green"></span> SELF-CONTAINED</span>
+              </div>
+              <div class="audit-body">
+                <p>When you lock a file, CyberVault bundles your encrypted content and original filename into a single
+                  <code>.locked</code> file:
+                </p>
+
+                <div class="binary-layout-viz">
+                  <div class="bin-block b-magic" title="Identifies the file format">VAULT02 (Header)</div>
+                  <div class="bin-block b-salt" title="Protects against dictionary attacks">Unique Salt</div>
+                  <div class="bin-block b-iv" title="Random initialization vector">Random Nonce</div>
+                  <div class="bin-block b-len" title="Metadata length indicator">Header Length</div>
+                  <div class="bin-block b-meta" title="Stores original filename & type securely">Encapsulated Info</div>
+                  <div class="bin-block b-cipher" title="Your fully encrypted data + integrity check">Encrypted Data +
+                    Security Tag</div>
+                </div>
+
+                <div class="architecture-highlights">
+                  <div class="highlight-point">
+                    <span class="neon-green">✓</span> <strong>Zero Cloud Tracking:</strong> No server logs, no accounts
+                    sent to external servers.
+                  </div>
+                  <div class="highlight-point">
+                    <span class="neon-green">✓</span> <strong>Hardened In-Memory Security:</strong> Active sessions are
+                    protected inside closure memory and cannot be bypassed via browser DevTools.
+                  </div>
+                  <div class="highlight-point">
+                    <span class="neon-green">✓</span> <strong>Self-Clearing:</strong> Password inputs and sensitive keys
+                    are wiped from memory immediately after each operation.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <span class="footer-logo">CYBERVAULT // PRIVATE & SECURE FILE LOCKER</span>
+          <span class="footer-desc">Static Client-Side Web Application · Ready for GitHub Pages deployment</span>
+        </div>
+        <div class="footer-right">
+          <span class="footer-badge">WEB CRYPTO API</span>
+          <span class="footer-badge">STANDALONE SPA</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+
+</html>
